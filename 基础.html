@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  基础 - esile.me
+  基础 - secfun
   
   </title>
   
   
-  <link href="atom.xml" rel="alternate" title="esile.me" type="application/atom+xml">
+  <link href="atom.xml" rel="alternate" title="secfun" type="application/atom+xml">
     <link rel="stylesheet" href="asset/css/foundation.min.css" />
     <link rel="stylesheet" href="asset/css/docs.css" />
     <script src="asset/js/vendor/modernizr.js"></script>
@@ -62,7 +62,7 @@
 
         <nav class="tab-bar show-for-small">
   <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
-    <span> &nbsp; esile.me</span>
+    <span> &nbsp; secfun</span>
   </a>
 </nav>
 
@@ -156,19 +156,38 @@
                         
                         	<h2 id="toc_0">what&#39;s join mean in thread</h2>
 
-<p>This is how one thread waits for the completion of another thread!</p>
+<p>You can wait for a thread to finish by calling its join() method. For instance, in the following code, the current thread will wait until thread2 finishes before printing Done.</p>
 
-<p>A nice use case of join is - say for example the main() function/thread creates a thread and doesn&#39;t wait ( using join ) for the created thread to complete and simply exits, then the newly created thread will also stop!</p>
+<p>thread2.start();<br/>
+// do more stuff here<br/>
+thread2.join();<br/>
+System.out.println(&quot;Done&quot;);</p>
 
-<p>Here is a nice explanation of Thread Management in general and Thread Join in particular! And here are some code snippets that show you some use cases of join and what happens when you don&#39;t use it!</p>
+<h2 id="toc_1">thread synchronization</h2>
 
-<h2 id="toc_1">new thread funtion</h2>
+<ul>
+<li><p>mutex</p></li>
+<li><p>cond</p></li>
+<li><p>p and v<br/>
+原语，不可中断的过程<br/>
+Dijkstra, one of the inventors of semaphores, used P and V. The letters come from the Dutch words Probeer (try) and Verhoog (increment).</p></li>
+</ul>
+
+<h2 id="toc_2">new thread funtion</h2>
 
 <pre><code class="language-c"> int pthread_create(pthread_t * thread, 
                        const pthread_attr_t * attr,
                        void * (*start_routine)(void *), 
                        void *arg);
 </code></pre>
+
+<h2 id="toc_3">几个多线程的问题</h2>
+
+<h4 id="toc_4">生产者消费者</h4>
+
+<h4 id="toc_5">读者写者</h4>
+
+<h4 id="toc_6">哲学家进餐</h4>
 
                         
                       </div>
@@ -343,7 +362,7 @@ That is an illustration when a void pointer can be cast to a constant void point
             
                 <div class="site-a-logo"><img src="http://i1.hdslb.com/bfs/face/82a92b004818e54df20a718a46096e1703dea493.gif" /></div>
             
-                <h1>esile.me</h1>
+                <h1>secfun</h1>
                 <div class="site-des">esile.me</div>
                 <div class="social">
 
