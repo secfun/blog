@@ -1,0 +1,377 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  python import - esile.me
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="esile.me" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site:blog.esile.me ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="http://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; esile.me</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+       
+       <li><a href="index.html">HOME</a></li>
+    <li><a href="archives.html">Archives</a></li>
+    <li><a href="about.html">ABOUT</a></li>
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="python.html">python</a></li>
+        
+            <li><a href="%E5%9F%BA%E7%A1%80.html">基础</a></li>
+        
+            <li><a href="docker.html">docker</a></li>
+        
+            <li><a href="%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html">消息队列</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>python import</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2016/11/15</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='python.html'>python</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h2 id="toc_0">先验知识</h2>
+
+<ul>
+<li><p>module in python</p>
+
+<p>A module is a file containing Python definitions and statements. The file name is the module name with the suffix .py appended. Within a module, the module’s name (as a string) is available as the value of the global variable <strong>name</strong>.</p>
+
+<p>They are executed only the first time the module name is encountered in an import statement. </p>
+
+<p>module can be excuted as script by -m switch</p></li>
+<li><p>dir()</p>
+
+<p>Without arguments, return the list of names in the current local scope. With an argument, attempt to return a list of valid attributes for that object.</p></li>
+<li><p>sys.modules</p>
+
+<p>存储着已经加载的module</p></li>
+<li><p>sys.path</p>
+
+<p>module的搜索路径， 第一个为空，表示是当前运行python文件的文件夹。</p></li>
+<li><p>sys.meta_path</p>
+
+<p>A list of finder objects that have their find_module() methods called to see if one of the objects can find the module to be imported. The find_module() method is called at least with the absolute name of the module being imported. If the module to be imported is contained in package then the parent package’s <strong>path</strong> attribute is passed in as a second argument. The method returns None if the module cannot be found, else returns a loader.</p>
+
+<p>sys.meta_path is searched before any implicit default finders or sys.path.`</p></li>
+<li><p>package<br/>
+    package is a collection of module<br/>
+    from package import item, the item can be either a submodule (or subpackage) of the package<br/>
+    from xx import subpackage/module/object<br/>
+    import subpackage/module</p></li>
+<li><p>-m的作用</p>
+
+<p>指定运行脚本的package和name<br/>
+python a.py a的__name__属性为__main__<br/>
+python -m some_dir.a a的__package__为some_dir <strong>name</strong>为a</p></li>
+<li><p>__package__</p>
+
+<p>解决相对引用下包定位的问题</p>
+
+<pre><code>ex1/
+    foo.py
+    main.py
+</code></pre>
+
+<pre><code class="language-python">foo.py
+a=10
+</code></pre>
+
+<pre><code class="language-main.py">from . import foo
+</code></pre>
+
+<p>如果直接在ex1下执行： python main.py 会报<code>ValueError: Attempted relative import in non-package</code>, 原因是main的__package__为空<br/>
+但是可以通过 python -m ex1.main来解决</p></li>
+<li><p>__name__</p>
+
+<p>当前module的name</p></li>
+</ul>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14793567225986.html" 
+          title="Previous Post: 常用命令备忘">&laquo; 常用命令备忘</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14791909799046.html" 
+          title="Next Post: celery">celery &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <!-- 多说评论框 start -->
+	<div class="ds-thread"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"esile"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- 多说公共JS代码 end -->
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <div class="site-a-logo"><img src="http://i1.hdslb.com/bfs/face/82a92b004818e54df20a718a46096e1703dea493.gif" /></div>
+            
+                <h1>esile.me</h1>
+                <div class="site-des">esile.me</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="python.html"><strong>python</strong></a>
+        
+            <a href="%E5%9F%BA%E7%A1%80.html"><strong>基础</strong></a>
+        
+            <a href="docker.html"><strong>docker</strong></a>
+        
+            <a href="%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html"><strong>消息队列</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="14793659525228.html">AMQP协议</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14793567225986.html">常用命令备忘</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14791926847943.html">python import</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14791909799046.html">celery</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14791359815853.html">multi thread</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    <script src="asset/chart/all-min.js"></script><script type="text/javascript">$(function(){    var mwebii=0;    var mwebChartEleId = 'mweb-chart-ele-';    $('pre>code').each(function(){        mwebii++;        var eleiid = mwebChartEleId+mwebii;        if($(this).hasClass('language-sequence')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = Diagram.parse($(this).text());            diagram.drawSVG(eleiid,{theme: 'simple'});        }else if($(this).hasClass('language-flow')){            var ele = $(this).addClass('nohighlight').parent();            $('<div id="'+eleiid+'"></div>').insertAfter(ele);            ele.hide();            var diagram = flowchart.parse($(this).text());            diagram.drawSVG(eleiid);        }    });});</script>
+
+
+
+  </body>
+</html>
