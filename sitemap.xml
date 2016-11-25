@@ -2,7 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
   <loc>http://blog.esile.me/</loc>
-  <lastmod>2016-11-22T14:01:34+08:00</lastmod>
+  <lastmod>2016-11-25T13:47:20+08:00</lastmod>
+</url>
+
+<url>
+  <loc>http://blog.esile.me/14799727855223.html</loc>
+  <lastmod>2016-11-24T15:33:05+08:00</lastmod>
 </url>
 
 <url>
@@ -61,6 +66,10 @@
 
 <url>
   <loc>http://blog.esile.me/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html</loc>
+</url>
+
+<url>
+  <loc>http://blog.esile.me/%E5%89%8D%E7%AB%AF.html</loc>
 </url>
 
 

@@ -76,6 +76,8 @@
     <li><label>Categories</label></li>
 
         
+            <li><a href="%E5%89%8D%E7%AB%AF.html">前端</a></li>
+        
             <li><a href="python.html">python</a></li>
         
             <li><a href="%E5%9F%BA%E7%A1%80.html">基础</a></li>
@@ -149,45 +151,300 @@
 			<div class="article">
                 <a class="clearlink" href="14791359815853.html">
                 
-                  <h1>multi thread</h1>
+                  <h1>linux中的多线程</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">what&#39;s join mean in thread</h2>
+                        	<h2 id="toc_0">相关API</h2>
+
+<p>Linux对线程的操作封装在pthread.h这个头文件中。</p>
+
+<h4 id="toc_1">创建</h4>
+
+<pre><code class="language-c">pthread_t pthread_t1, pthread_t2;
+pthread_create(&amp;pthread_t1, NULL, (void *) produce, NULL);
+</code></pre>
+
+<h4 id="toc_2">join</h4>
 
 <p>You can wait for a thread to finish by calling its join() method. For instance, in the following code, the current thread will wait until thread2 finishes before printing Done.</p>
 
-<p>thread2.start();<br/>
-// do more stuff here<br/>
-thread2.join();<br/>
-System.out.println(&quot;Done&quot;);</p>
-
-<h2 id="toc_1">thread synchronization</h2>
-
-<ul>
-<li><p>mutex</p></li>
-<li><p>cond</p></li>
-<li><p>p and v<br/>
-原语，不可中断的过程<br/>
-Dijkstra, one of the inventors of semaphores, used P and V. The letters come from the Dutch words Probeer (try) and Verhoog (increment).</p></li>
-</ul>
-
-<h2 id="toc_2">new thread funtion</h2>
-
-<pre><code class="language-c"> int pthread_create(pthread_t * thread, 
-                       const pthread_attr_t * attr,
-                       void * (*start_routine)(void *), 
-                       void *arg);
+<pre><code class="language-c">thread2.start();
+// do more stuff here
+thread2.join();
+System.out.println(&quot;Done&quot;);
 </code></pre>
 
-<h2 id="toc_3">几个多线程的问题</h2>
+<h2 id="toc_3">线程同步</h2>
 
-<h4 id="toc_4">生产者消费者</h4>
+<h4 id="toc_4">race condition</h4>
 
-<h4 id="toc_5">读者写者</h4>
+<pre><code class="language-c">//
+// Created by xdy on 16/11/23.
+//
+#include &quot;stdio.h&quot;
+#include &quot;pthread.h&quot;
+#include &quot;time.h&quot;
 
-<h4 id="toc_6">哲学家进餐</h4>
+int shared_int;
+
+void increase(void) {
+    printf(&quot;current thread id: %d,init shared_int: %d\n&quot;,pthread_self(), shared_int);
+    printf(&quot;current thread id: %d,start shared_int: %d\n&quot;,pthread_self(), shared_int);
+    for (int i = 0; i &lt; 100000; ++i) {
+        shared_int += 1;
+    }
+    printf(&quot;end shared_int: %d\n&quot;, shared_int);
+}
+
+int main() {
+    pthread_t pthread_t1, pthread_t2, pthread_t3;
+    pthread_create(&amp;pthread_t1, NULL, (void *) increase, NULL);
+    pthread_create(&amp;pthread_t2, NULL, (void *) increase, NULL);
+    pthread_create(&amp;pthread_t3, NULL, (void *) increase, NULL);
+
+    pthread_join(pthread_t1, NULL);
+    pthread_join(pthread_t2, NULL);
+    pthread_join(pthread_t3, NULL);
+    printf(&quot;shared_int: %d&quot;, shared_int);
+    return 0;
+}
+</code></pre>
+
+<p>输出</p>
+
+<pre><code class="language-c">/Users/xdy/Library/Caches/CLion2016.1/cmake/generated/algo-6e4e421/6e4e421/Debug0/algo
+current thread id: 528384,init shared_int: 0
+current thread id: 1064960,init shared_int: 0
+current thread id: 1601536,init shared_int: 0
+current thread id: 528384,start shared_int: 0
+current thread id: 1064960,start shared_int: 0
+current thread id: 1601536,start shared_int: 0
+end shared_int: 100025
+end shared_int: 115999
+end shared_int: 140708
+shared_int: 140708
+Process finished with exit code 0
+</code></pre>
+
+<p>上边三个线程产生了race condition, 导致最后的结果不可预测。</p>
+
+<h4 id="toc_5">mutex</h4>
+
+<pre><code class="language-c">//
+// Created by xdy on 16/11/23.
+//
+#include &quot;stdio.h&quot;
+#include &quot;pthread.h&quot;
+#include &quot;time.h&quot;
+
+int shared_int;
+pthread_mutex_t mutex_t;
+
+
+void increase(void) {
+    printf(&quot;current thread id: %d,init shared_int: %d\n&quot;,pthread_self(), shared_int);
+    pthread_mutex_lock(&amp;mutex_t);
+    printf(&quot;current thread id: %d,start shared_int: %d\n&quot;,pthread_self(), shared_int);
+    for (int i = 0; i &lt; 100000; ++i) {
+        shared_int += 1;
+    }
+    printf(&quot;end shared_int: %d\n&quot;, shared_int);
+    pthread_mutex_unlock(&amp;mutex_t);
+}
+
+int main() {
+    pthread_mutex_init(&amp;mutex_t, NULL);
+    pthread_t pthread_t1, pthread_t2, pthread_t3;
+    pthread_create(&amp;pthread_t1, NULL, (void *) increase, NULL);
+    pthread_create(&amp;pthread_t2, NULL, (void *) increase, NULL);
+    pthread_create(&amp;pthread_t3, NULL, (void *) increase, NULL);
+
+    pthread_join(pthread_t1, NULL);
+    pthread_join(pthread_t2, NULL);
+    pthread_join(pthread_t3, NULL);
+    printf(&quot;shared_int: %d&quot;, shared_int);
+    return 0;
+}
+</code></pre>
+
+<p>输出</p>
+
+<pre><code>/Users/xdy/Library/Caches/CLion2016.1/cmake/generated/algo-6e4e421/6e4e421/Debug0/algo
+current thread id: 528384,init shared_int: 0
+current thread id: 1064960,init shared_int: 0
+current thread id: 1601536,init shared_int: 0
+current thread id: 528384,start shared_int: 0
+end shared_int: 100000
+current thread id: 1064960,start shared_int: 100000
+end shared_int: 200000
+current thread id: 1601536,start shared_int: 200000
+end shared_int: 300000
+shared_int: 300000
+Process finished with exit code 0
+</code></pre>
+
+<p>通过结果可以看出来线程的内部的代码可以被&quot;原子性&quot;的执行,最后的结果也变成了预期的300000.</p>
+
+<p>另外还有两个函数:</p>
+
+<h6 id="toc_6"><code>int pthread_mutex_trylock(pthread_mutex_t *);</code></h6>
+
+<p>这个函数在加锁失败时不会会让线程进入睡眠状态，它直接失败返回，所以需要自己判断返回值。</p>
+
+<h6 id="toc_7"><code>int pthread_mutex_timedlock(pthread_mutex_t *restrict mutex,const struct timespec *restrict tsptr);</code></h6>
+
+<p>使用这个函数可以指定一个超时时间，在这个超时时间到来之前如果没有获得锁，则失败返回，不会一直阻塞.注意这个时间不是时间段,而是一个阻塞到时间点的时间戳.</p>
+
+<h6 id="toc_8">释放资源</h6>
+
+<p><code>pthread_mutex_destroy(pthread_mutex_t *mutex);</code><br/>
+如果在初始化互斥量的时候，分配了其它资源，需要使用上面这个函数来释放掉这些资源。这个函数执行之后，互斥量变成了未初始化的状态，对它执行操作的结果是未定义的。如果需要再次使用这个互斥量的话，可以再次执行初始化函数来初始化。</p>
+
+<h4 id="toc_9">condition variable</h4>
+
+<pre><code class="language-c">//
+// Created by xdy on 16/11/23.
+//
+#include &quot;stdio.h&quot;
+#include &quot;pthread.h&quot;
+#include &lt;unistd.h&gt;
+
+pthread_cond_t cond_t = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t mutex_t;
+
+void emit(void) {
+    // sleep 3s
+    for (int i = 0; i &lt; 3; ++i) {
+        printf(&quot;sleep %d s\n&quot;, i);
+        sleep(1);
+    }
+    pthread_mutex_lock(&amp;mutex_t);
+    pthread_cond_signal(&amp;cond_t);
+    puts(&quot;emmit&quot;);
+    pthread_mutex_unlock(&amp;mutex_t);
+}
+
+void wait_signal(void) {
+    pthread_cond_wait(&amp;cond_t, &amp;mutex_t);
+    puts(&quot;emmited&quot;);
+}
+
+int main() {
+    pthread_t emit_t, wait_signal_t;
+    pthread_mutex_init(&amp;mutex_t, NULL);
+
+    pthread_create(&amp;emit_t, NULL, (void *) emit, NULL);
+    pthread_create(&amp;wait_signal_t, NULL, (void *) wait_signal, NULL);
+
+    pthread_join(emit_t, NULL);
+    pthread_join(wait_signal_t, NULL);
+
+    return 0;
+}
+</code></pre>
+
+<p>输出<br/>
+```<br/>
+/Users/xdy/Library/Caches/CLion2016.1/cmake/generated/algo-6e4e421/6e4e421/Debug0/algo<br/>
+sleep 0 s<br/>
+sleep 1 s<br/>
+sleep 2 s<br/>
+emmit<br/>
+emmited</p>
+
+<p>Process finished with exit code 0<br/>
+```<br/>
+wait_emit直到emit触发过后才执行,线程的执行顺序和我们预测的一样。一定要注意emit时候有cond在wait状态，否则emit不会产生效果。</p>
+
+<h4 id="toc_10">信号量</h4>
+
+<p><img src="media/14791359815853/14799857660065.jpg" alt=""/></p>
+
+<blockquote>
+<p>P原语表示试图进入使用资源，V原语表示添加生产资源。<br/>
+P，V名称的来历：Dijkstra, one of the inventors of semaphores, used P and V. The letters come from the Dutch words Probeer (try) and Verhoog (increment).</p>
+</blockquote>
+
+<pre><code class="language-c">//
+// Created by xdy on 16/11/24.
+//
+
+#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;semaphore.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;time.h&gt;
+
+
+sem_t sem_t1;
+
+char *get_time() {
+    time_t rawtime;
+    struct tm *timeinfo;
+
+    time(&amp;rawtime);
+    timeinfo = localtime(&amp;rawtime);
+    char *now = asctime(timeinfo);
+    return now;
+}
+
+void produce(void) {
+    while (1) {
+        sleep(1);
+        sem_post(&amp;sem_t1);
+        printf(&quot;thread produce at %s\n&quot;, get_time());
+    }
+}
+
+void consume(void) {
+    while (1) {
+        sleep(3);
+        sem_wait(&amp;sem_t1);
+        printf(&quot;thread consume at %s\n&quot;, get_time());
+    }
+}
+
+int main() {
+    puts(&quot;semaphore&quot;);
+    sem_init(&amp;sem_t1, 0, 0);
+    pthread_t pthread_t1, pthread_t2;
+    pthread_create(&amp;pthread_t1, NULL, (void *) produce, NULL);
+    pthread_create(&amp;pthread_t2, NULL, (void *) consume, NULL);
+
+    pthread_join(pthread_t1, NULL);
+    pthread_join(pthread_t2, NULL);
+}
+</code></pre>
+
+<pre><code>xudy@iZ286wee5zoZ ~/tmp&gt; ./sem
+semaphore
+thread produce at Fri Nov 25 00:05:50 2016
+
+thread produce at Fri Nov 25 00:05:51 2016
+
+thread consume at Fri Nov 25 00:05:52 2016
+
+thread produce at Fri Nov 25 00:05:52 2016
+
+thread produce at Fri Nov 25 00:05:53 2016
+
+thread produce at Fri Nov 25 00:05:54 2016
+
+thread consume at Fri Nov 25 00:05:55 2016
+</code></pre>
+
+<p>上边是在我电脑上的运行结果, sem_post 其实是一个P操作, 可以让sem_t1加1.<br/>
+sem_wait调用时候根据当前sem_t1的值不同有两种变现:<br/>
+      当sem_t1&gt;0时候, 直接sem_t1 -= 1, 然后接着向下执行;<br/>
+      当sem_t1&lt;=0时候, 阻塞当前线程, 直到sem_t1的值大于0, 然后开始执行.<br/>
+todo:// 当两个线程分别被阻塞时候, 是不是先被阻塞的那个先执行? 还是两个进入race condition?</p>
+
+<p>ref:<br/>
+<a href="http://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html#SCHEDULING">http://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html#SCHEDULING</a><br/>
+<a href="http://stackoverflow.com/a/14925150/6877366">http://stackoverflow.com/a/14925150/6877366</a><br/>
+<a href="http://www.cppblog.com/Solstice/archive/2013/09/09/203094.html">http://www.cppblog.com/Solstice/archive/2013/09/09/203094.html</a></p>
 
                         
                       </div>
@@ -391,6 +648,8 @@ That is an illustration when a void pointer can be cast to a constant void point
 
       	<p class="cat-list">
         
+            <a href="%E5%89%8D%E7%AB%AF.html"><strong>前端</strong></a>
+        
             <a href="python.html"><strong>python</strong></a>
         
             <a href="%E5%9F%BA%E7%A1%80.html"><strong>基础</strong></a>
@@ -412,6 +671,12 @@ That is an illustration when a void pointer can be cast to a constant void point
                 <div class="side-content">
                 <ul class="posts-list">
 	      
+		      
+			      <li class="post">
+			        <a href="14799727855223.html">px em rem</a>
+			      </li>
+		     
+		  
 		      
 			      <li class="post">
 			        <a href="14793659525228.html">AMQP协议</a>
@@ -437,10 +702,6 @@ That is an illustration when a void pointer can be cast to a constant void point
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="14791359815853.html">multi thread</a>
-			      </li>
-		     
 		  
 		      
 		  
