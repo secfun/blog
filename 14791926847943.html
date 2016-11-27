@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  python import - secfun
+  python import 机制 - secfun
   
   </title>
   
@@ -107,7 +107,7 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>python import</h1>
+          <h1>python import 机制</h1>
      
         <div class="read-more clearfix">
           <span class="date">2016/11/15</span>
@@ -127,62 +127,131 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <h2 id="toc_0">准备知识</h2>
+      <h2 id="toc_0">import相关知识</h2>
 
-<ul>
-<li><p>module in python</p>
+<h4 id="toc_1">python中的module</h4>
 
-<p>A module is a file containing Python definitions and statements. The file name is the module name with the suffix .py appended. Within a module, the module’s name (as a string) is available as the value of the global variable <strong>name</strong>.</p>
+<p>module其实就是一个.py结尾的python脚本文件，module的名字可以通过该module的__name__属性查询到。</p>
 
-<p>They are executed only the first time the module name is encountered in an import statement. </p>
+<h4 id="toc_2">python中的package</h4>
 
-<p>module can be excuted as script by -m switch</p></li>
-<li><p>dir()</p>
+<p>package是module的集合，python中的import可以有以下几种写法：</p>
 
-<p>Without arguments, return the list of names in the current local scope. With an argument, attempt to return a list of valid attributes for that object.</p></li>
-<li><p>sys.modules</p>
+<pre><code class="language-python">package is a collection of module
+from package import item, the item can be either a submodule (or subpackage) of the package
+from xx import subpackage/module/object
+import subpackage/module
+</code></pre>
 
-<p>存储着已经加载的module</p></li>
-<li><p>sys.path</p>
+<h4 id="toc_3">sys.modules</h4>
 
-<p>module的搜索路径， 第一个为空，表示是当前运行python文件的文件夹。</p></li>
-<li><p>sys.meta_path</p>
+<p>存储着已经加载的module</p>
 
-<p>A list of finder objects that have their find_module() methods called to see if one of the objects can find the module to be imported. The find_module() method is called at least with the absolute name of the module being imported. If the module to be imported is contained in package then the parent package’s <strong>path</strong> attribute is passed in as a second argument. The method returns None if the module cannot be found, else returns a loader.</p>
+<h4 id="toc_4">sys.path</h4>
 
-<p>sys.meta_path is searched before any implicit default finders or sys.path.`</p></li>
-<li><p>package<br/>
-    package is a collection of module<br/>
-    from package import item, the item can be either a submodule (or subpackage) of the package<br/>
-    from xx import subpackage/module/object<br/>
-    import subpackage/module</p></li>
-<li><p>-m的作用</p>
+<p>module的搜索路径，第一个为空，表示是当前运行python文件的文件夹。</p>
+
+<pre><code class="language-python">&gt;&gt;&gt; import sys
+&gt;&gt;&gt; sys.path
+[&#39;&#39;, &#39;/usr/local/Cellar/python/2.7.12/Frameworks/Python.framework/Versions/2.7/lib/python27.zip&#39;]
+</code></pre>
+
+<h4 id="toc_5">sys.meta_path</h4>
+
+<p>meta_path中存储了finder对象，当试图通过绝对引用导入一个module时候会调用它的find_module()，module的path做为参数传递给它。如果要导入的module可以被找到，那么就返回一个这个module的loader，否则返回None。<br/>
+另外需要注意的是，sys.meta_path会在sys.path之前被查找。</p>
+
+<h3 id="toc_6">介绍完和python import相关的知识，接下来看一看当运行import xxx时候背后发生了什么：</h3>
+
+<ol>
+<li>先去sys.modules里检查是否有xxx， 如果有直接加载。</li>
+<li>依次调用sys.meta_path中的finder对象，通过module的path检查是否有匹配的对象。</li>
+<li>依次检查sys.path路径下是否有匹配的module，如果这个时候还没有，则返回import error。</li>
+</ol>
+
+<h3 id="toc_7">python的相对引用和绝对引用</h3>
+
+<h4 id="toc_8">relative import</h4>
+
+<pre><code>$ tree ex1/
+ex1/
+├── __init__.py
+├── bar.py
+└── foo.py
+
+0 directories, 3 files
+</code></pre>
+
+<pre><code>$ cat foo.py
+a=1
+import sys
+print &quot;foo package name&quot;, __package__, __name__
+</code></pre>
+
+<pre><code>$ cat bar.py
+import sys
+print &quot;bar package name&quot;, __package__, __name__
+from .foo import a
+print &quot;foo a is:&quot;, a
+</code></pre>
+
+<pre><code>$ python bar.py
+bar package name None __main__
+Traceback (most recent call last):
+  File &quot;bar.py&quot;, line 3, in &lt;module&gt;
+    from .foo import a
+ValueError: Attempted relative import in non-package
+</code></pre>
+
+<p>上边的实验我们可以看到当我们使用相对导入时候，因为bar的package为空，python不知道相对于谁来导入我们的foo module。<br/>
+但是我们可以通过python的－m （run module as scripts）指令来指定运行脚本的package.</p>
+
+<pre><code>$ python -m ex1.bar
+bar package name ex1 __main__
+foo package name ex1 ex1.foo
+foo a is: 1
+</code></pre>
+
+<h6 id="toc_9">-m的作用</h6>
 
 <p>指定运行脚本的package和name<br/>
 python a.py a的__name__属性为__main__<br/>
-python -m some_dir.a a的__package__为some_dir <strong>name</strong>为a</p></li>
-<li><p>__package__</p>
+python -m some_dir.a a的__package__为some_dir <strong>name</strong>为a</p>
 
-<p>解决相对引用下包定位的问题</p>
+<h4 id="toc_10">absolute import</h4>
 
-<pre><code>ex1/
-    foo.py
-    main.py
+<p>python2.6之后默认是absolute import， 绝对引用可以更清楚的看到module的引用层次</p>
+
+<pre><code>$ tree
+.
+├── __init__.py
+├── bar.py
+└── foo.py
+
+0 directories, 3 files
 </code></pre>
 
-<pre><code class="language-python">foo.py
-a=10
+<pre><code>$ cat foo.py
+a=1
+print &quot;foo pageage name&quot;, __package__, __name__
 </code></pre>
 
-<pre><code class="language-main.py">from . import foo
+<pre><code>$ cat bar.py
+import sys
+print &quot;package name&quot;, __package__, __name__
+from foo import a
+print &quot;foo a is:&quot;, a
 </code></pre>
 
-<p>如果直接在ex1下执行： python main.py 会报<code>ValueError: Attempted relative import in non-package</code>, 原因是main的__package__为空<br/>
-但是可以通过 python -m ex1.main来解决</p></li>
-<li><p>__name__</p>
+<pre><code>$ python bar.py
+package name None __main__
+foo pageage name None foo
+foo a is: 1
+</code></pre>
 
-<p>当前module的name</p></li>
-</ul>
+<p>由于python默认会把当前路径加入到sys.path中， 当<code>from foo import a</code> 时候，就会定位到当前目录中的foo.py, 并从中导入a变量。</p>
+
+<p>ref: <a href="https://www.genedock.com/blog/2015/10/25/python-import/#">https://www.genedock.com/blog/2015/10/25/python-import/#</a></p>
 
 
     
@@ -202,7 +271,7 @@ a=10
       <p class="text-right" style="padding:15px 0px;">
       
           <a  href="14791909799046.html" 
-          title="Next Post: celery">celery &raquo;</a>
+          title="Next Post: django 用middleware实现请求时间统计">django 用middleware实现请求时间统计 &raquo;</a>
       
       </p>
         </div>
@@ -298,6 +367,18 @@ var duoshuoQuery = {short_name:"esile"};
 	      
 		      
 			      <li class="post">
+			        <a href="14800647396409.html">python 的单例模式</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14800576524296.html">celery教程</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14799727855223.html">px em rem</a>
 			      </li>
 		     
@@ -315,16 +396,8 @@ var duoshuoQuery = {short_name:"esile"};
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="14791926847943.html">python import</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="14791909799046.html">celery</a>
-			      </li>
-		     
 		  
 		      
 		  
