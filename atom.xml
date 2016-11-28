@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[secfun]]></title>
-  <link href="http://blog.esile.me/atom.xml" rel="self"/>
-  <link href="http://blog.esile.me/"/>
-  <updated>2016-11-25T13:47:20+08:00</updated>
-  <id>http://blog.esile.me/</id>
+  <link href="/atom.xml" rel="self"/>
+  <link href="/"/>
+  <updated>2016-11-27T16:53:21+08:00</updated>
+  <id>/</id>
   <author>
     <name><![CDATA[]]></name>
     
@@ -13,10 +13,20 @@
   <generator uri="http://www.mweb.im/">MWeb</generator>
   
   <entry>
+    <title type="html"><![CDATA[go tutorial]]></title>
+    <link href="/14802568775970.html"/>
+    <updated>2016-11-27T22:27:57+08:00</updated>
+    <id>/14802568775970.html</id>
+    <content type="html"><![CDATA[
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[python 的单例模式]]></title>
-    <link href="http://blog.esile.me/14800647396409.html"/>
+    <link href="/14800647396409.html"/>
     <updated>2016-11-25T17:05:39+08:00</updated>
-    <id>http://blog.esile.me/14800647396409.html</id>
+    <id>/14800647396409.html</id>
     <content type="html"><![CDATA[
 <p>我们可以使用经典的锁来实现单例， 但是这个用的不是</p>
 
@@ -25,9 +35,9 @@
   
   <entry>
     <title type="html"><![CDATA[celery教程]]></title>
-    <link href="http://blog.esile.me/14800576524296.html"/>
+    <link href="/14800576524296.html"/>
     <updated>2016-11-25T15:07:32+08:00</updated>
-    <id>http://blog.esile.me/14800576524296.html</id>
+    <id>/14800576524296.html</id>
     <content type="html"><![CDATA[
 
 ]]></content>
@@ -35,9 +45,9 @@
   
   <entry>
     <title type="html"><![CDATA[px em rem]]></title>
-    <link href="http://blog.esile.me/14799727855223.html"/>
+    <link href="/14799727855223.html"/>
     <updated>2016-11-24T15:33:05+08:00</updated>
-    <id>http://blog.esile.me/14799727855223.html</id>
+    <id>/14799727855223.html</id>
     <content type="html"><![CDATA[
 <p>项目中px，em，rem都可以表示尺寸，它们有何区别？</p>
 
@@ -57,9 +67,9 @@
   
   <entry>
     <title type="html"><![CDATA[AMQP协议]]></title>
-    <link href="http://blog.esile.me/14793659525228.html"/>
+    <link href="/14793659525228.html"/>
     <updated>2016-11-17T14:59:12+08:00</updated>
-    <id>http://blog.esile.me/14793659525228.html</id>
+    <id>/14793659525228.html</id>
     <content type="html"><![CDATA[
 
 ]]></content>
@@ -67,9 +77,9 @@
   
   <entry>
     <title type="html"><![CDATA[常用命令备忘]]></title>
-    <link href="http://blog.esile.me/14793567225986.html"/>
+    <link href="/14793567225986.html"/>
     <updated>2016-11-17T12:25:22+08:00</updated>
-    <id>http://blog.esile.me/14793567225986.html</id>
+    <id>/14793567225986.html</id>
     <content type="html"><![CDATA[
 <ul>
 <li>rsync 非默认端口连接
@@ -87,9 +97,9 @@
   
   <entry>
     <title type="html"><![CDATA[python import 机制]]></title>
-    <link href="http://blog.esile.me/14791926847943.html"/>
+    <link href="/14791926847943.html"/>
     <updated>2016-11-15T14:51:24+08:00</updated>
-    <id>http://blog.esile.me/14791926847943.html</id>
+    <id>/14791926847943.html</id>
     <content type="html"><![CDATA[
 <h2 id="toc_0">import相关知识</h2>
 
@@ -222,9 +232,9 @@ foo a is: 1
   
   <entry>
     <title type="html"><![CDATA[django 用middleware实现请求时间统计]]></title>
-    <link href="http://blog.esile.me/14791909799046.html"/>
+    <link href="/14791909799046.html"/>
     <updated>2016-11-15T14:22:59+08:00</updated>
-    <id>http://blog.esile.me/14791909799046.html</id>
+    <id>/14791909799046.html</id>
     <content type="html"><![CDATA[
 
 ]]></content>
@@ -232,9 +242,9 @@ foo a is: 1
   
   <entry>
     <title type="html"><![CDATA[linux中的多线程]]></title>
-    <link href="http://blog.esile.me/14791359815853.html"/>
+    <link href="/14791359815853.html"/>
     <updated>2016-11-14T23:06:21+08:00</updated>
-    <id>http://blog.esile.me/14791359815853.html</id>
+    <id>/14791359815853.html</id>
     <content type="html"><![CDATA[
 <h2 id="toc_0">相关API</h2>
 
@@ -531,9 +541,9 @@ todo:// 当两个线程分别被阻塞时候, 是不是先被阻塞的那个先�
   
   <entry>
     <title type="html"><![CDATA[void *]]></title>
-    <link href="http://blog.esile.me/14791190693458.html"/>
+    <link href="/14791190693458.html"/>
     <updated>2016-11-14T18:24:29+08:00</updated>
-    <id>http://blog.esile.me/14791190693458.html</id>
+    <id>/14791190693458.html</id>
     <content type="html"><![CDATA[
 <p>A pointer to void is a &quot;generic&quot; pointer type. A void * can be converted to any other pointer type without an explicit cast. You cannot dereference a void * or do pointer arithmetic with it; you must convert it to a pointer to an complete data type first.</p>
 
@@ -594,9 +604,9 @@ That is an illustration when a void pointer can be cast to a constant void point
   
   <entry>
     <title type="html"><![CDATA[用docker来持续集成]]></title>
-    <link href="http://blog.esile.me/14773745036118.html"/>
+    <link href="/14773745036118.html"/>
     <updated>2016-10-25T13:48:23+08:00</updated>
-    <id>http://blog.esile.me/14773745036118.html</id>
+    <id>/14773745036118.html</id>
     <content type="html"><![CDATA[
 
 ]]></content>
@@ -604,9 +614,9 @@ That is an illustration when a void pointer can be cast to a constant void point
   
   <entry>
     <title type="html"><![CDATA[post中的content-type]]></title>
-    <link href="http://blog.esile.me/14721979511946.html"/>
+    <link href="/14721979511946.html"/>
     <updated>2016-08-26T15:52:31+08:00</updated>
-    <id>http://blog.esile.me/14721979511946.html</id>
+    <id>/14721979511946.html</id>
     <content type="html"><![CDATA[
 <p>http的post协议可以把提交的内容放在http request body中，数据格式常见的有以下几种，针对不同的数据格式，服务端需要不同的解码方式。</p>
 
