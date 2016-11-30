@@ -83,10 +83,6 @@
             <li><a href="%E5%9F%BA%E7%A1%80.html">基础</a></li>
         
             <li><a href="docker.html">docker</a></li>
-        
-            <li><a href="%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html">消息队列</a></li>
-        
-            <li><a href="go.html">go</a></li>
          
 
       </ul>
@@ -129,7 +125,44 @@
       </div><!-- article -->
 
       <div class="article-content">
-      
+      <pre><code class="language-python"># -*- coding:utf-8 -*-
+import time
+
+class RequestTime(object):
+
+    def __init__(self):
+        self.pstart_time = time.time()
+
+    def process_request(self, request):
+        self._reset()
+
+    def process_view(self, request, callback, callback_args, callback_kwargs):
+        try:
+            view_name = callback.func_name # If it&#39;s a function
+        except AttributeError:
+            view_name = callback.__class__.__name__ + &#39;.__call__&#39; # If it&#39;s a class
+
+        self.view_name = &quot;%s.%s&quot; % (callback.__module__, view_name)
+
+    def process_response(self, request, response):
+        if not hasattr(self, &quot;view_name&quot;):
+            return response
+
+        if response.status_code in [200, 403, 404, 499]:
+
+            info = &quot;Time Elapsed: %.6fs, %s&quot; % (
+                                (time.time() - self.pstart_time),
+                                self.view_name)
+            log_elapsed_info(info)
+        self._reset()
+        return response
+
+    def _reset(self):
+        self.view_name = &quot;&quot;
+        self.pstart_time = time.time()
+
+</code></pre>
+
 
     
 
@@ -226,10 +259,6 @@ var duoshuoQuery = {short_name:"esile"};
             <a href="%E5%9F%BA%E7%A1%80.html"><strong>基础</strong></a>
         
             <a href="docker.html"><strong>docker</strong></a>
-        
-            <a href="%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97.html"><strong>消息队列</strong></a>
-        
-            <a href="go.html"><strong>go</strong></a>
          
         </p>
 
@@ -252,19 +281,7 @@ var duoshuoQuery = {short_name:"esile"};
 		  
 		      
 			      <li class="post">
-			        <a href="14802568775970.html">go tutorial</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
 			        <a href="14800647396409.html">python 的单例模式</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14800576524296.html">celery教程</a>
 			      </li>
 		     
 		  
@@ -275,10 +292,16 @@ var duoshuoQuery = {short_name:"esile"};
 		     
 		  
 		      
+			      <li class="post">
+			        <a href="14793567225986.html">常用命令备忘</a>
+			      </li>
+		     
 		  
 		      
-		  
-		      
+			      <li class="post">
+			        <a href="14791926847943.html">python import 机制</a>
+			      </li>
+		     
 		  
 		      
 		  

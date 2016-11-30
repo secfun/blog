@@ -4,7 +4,7 @@
   <title><![CDATA[secfun]]></title>
   <link href="/atom.xml" rel="self"/>
   <link href="/"/>
-  <updated>2016-11-30T16:19:47+08:00</updated>
+  <updated>2016-11-30T16:27:30+08:00</updated>
   <id>/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -31,16 +31,6 @@
 <p>如果testcase有问题，你需要修复完testcase后再向<code>master</code>发起合并申请。</p>
 
 <p>如果开发需要上线，就把<code>master</code>上需要上线的代码节点，邮件告知全体开发成员。运维同学会把这个节点的代码合并到<code>release</code>分支，并部署在线上机器上。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[go tutorial]]></title>
-    <link href="/14802568775970.html"/>
-    <updated>2016-11-27T22:27:57+08:00</updated>
-    <id>/14802568775970.html</id>
-    <content type="html"><![CDATA[
 
 ]]></content>
   </entry>
@@ -77,16 +67,6 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[celery教程]]></title>
-    <link href="/14800576524296.html"/>
-    <updated>2016-11-25T15:07:32+08:00</updated>
-    <id>/14800576524296.html</id>
-    <content type="html"><![CDATA[
-
-]]></content>
-  </entry>
-  
-  <entry>
     <title type="html"><![CDATA[px em rem]]></title>
     <link href="/14799727855223.html"/>
     <updated>2016-11-24T15:33:05+08:00</updated>
@@ -104,16 +84,6 @@
 <li><p>因为默认时字体 16px = 100%，则有 10px = 62.5%。所以首先在 body 中全局声明 font-size=62.5%=10px，也就是定义了网页 body 默认字体大小为 10px，由于 em 有继承父级元素字体大小的特性，如果某元素的父级没有设定字体大小，那么它就继续了 body 默认字体大小 1em = 10px。</p></li>
 </ul></li>
 </ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[AMQP协议]]></title>
-    <link href="/14793659525228.html"/>
-    <updated>2016-11-17T14:59:12+08:00</updated>
-    <id>/14793659525228.html</id>
-    <content type="html"><![CDATA[
 
 ]]></content>
   </entry>
@@ -279,6 +249,43 @@ foo a is: 1
     <updated>2016-11-15T14:22:59+08:00</updated>
     <id>/14791909799046.html</id>
     <content type="html"><![CDATA[
+<pre><code class="language-python"># -*- coding:utf-8 -*-
+import time
+
+class RequestTime(object):
+
+    def __init__(self):
+        self.pstart_time = time.time()
+
+    def process_request(self, request):
+        self._reset()
+
+    def process_view(self, request, callback, callback_args, callback_kwargs):
+        try:
+            view_name = callback.func_name # If it&#39;s a function
+        except AttributeError:
+            view_name = callback.__class__.__name__ + &#39;.__call__&#39; # If it&#39;s a class
+
+        self.view_name = &quot;%s.%s&quot; % (callback.__module__, view_name)
+
+    def process_response(self, request, response):
+        if not hasattr(self, &quot;view_name&quot;):
+            return response
+
+        if response.status_code in [200, 403, 404, 499]:
+
+            info = &quot;Time Elapsed: %.6fs, %s&quot; % (
+                                (time.time() - self.pstart_time),
+                                self.view_name)
+            log_elapsed_info(info)
+        self._reset()
+        return response
+
+    def _reset(self):
+        self.view_name = &quot;&quot;
+        self.pstart_time = time.time()
+
+</code></pre>
 
 ]]></content>
   </entry>
