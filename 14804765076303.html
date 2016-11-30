@@ -133,7 +133,7 @@
 
 <p>分支命名规范，新的特性开发使用feature/xxx, bug修复分支bugfix/xxx。</p>
 
-<p>比如需要增加一个检查电话号码合法性检查的新特性，从master上checkout出<code>feature/add_tel_check</code>，在开发完成并在本地测试没问题之后，合并到test分支进行测试服务器测试，如果测试服测试过程中发现有问题，继续在<code>feature/check_tel</code>更改，改完再合并到<code>test</code>分支到测试服务器上测试，一直重复开发测试到没问题。</p>
+<p>比如需要增加一个检查电话号码合法性检查的新特性，从master上checkout出<code>feature/check_tel</code>，在开发完成并在本地测试没问题之后，合并到test分支进行测试服务器测试，如果测试服测试过程中发现有问题，继续在<code>feature/check_tel</code>更改，改完再合并到<code>test</code>分支到测试服务器上测试，一直重复开发测试到没问题。</p>
 
 <p>这个时候把<code>feature/check_tel</code>申请合并到<code>master</code>, 这个时机需要做两件事。把代码链接发送给小组成员做codereview，jenkins服务器会把你的提交这个版本的代码跑一次testcase。</p>
 
