@@ -129,7 +129,27 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>我们可以使用经典的锁来实现单例， 但是这个用的不是</p>
+      <p>可以在创建对象过程中hook一下，保证创建时候只有一个对象.</p>
+
+<pre><code class="language-python">class Singleton(object):  
+    def __new__(cls, *args, **kw):  
+        if not hasattr(cls, &#39;_instance&#39;):  
+            orig = super(Singleton, cls)  
+            cls._instance = orig.__new__(cls, *args, **kw)  
+        return cls._instance  
+</code></pre>
+
+<p>但是这种不是线程安全的， 在大并发下可能出现多个实例，并且实例被覆盖的情况。</p>
+
+<pre><code class="language-python">class Singleton(object):  
+    def __new__(cls, *args, **kw):  
+        if not hasattr(cls, &#39;_instance&#39;):  
+            orig = super(Singleton, cls)  
+            cls._instance = orig.__new__(cls, *args, **kw)  
+        return cls._instance  
+</code></pre>
+
+<p>更简单的， 我们可以依赖python的import机制，来实现单例。</p>
 
 
     
@@ -247,6 +267,12 @@ var duoshuoQuery = {short_name:"esile"};
 	      
 		      
 			      <li class="post">
+			        <a href="14804765076303.html">git持续集成分支设计</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14802568775970.html">go tutorial</a>
 			      </li>
 		     
@@ -270,10 +296,6 @@ var duoshuoQuery = {short_name:"esile"};
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="14793659525228.html">AMQP协议</a>
-			      </li>
-		     
 		  
 		      
 		  

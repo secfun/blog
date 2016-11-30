@@ -109,6 +109,51 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14804765076303.html">
+                
+                  <h1>git持续集成分支设计</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><img src="media/14804765076303/14804939447492.jpg" alt=""/></p>
+
+<p>分支命名规范，新的特性开发使用feature/xxx, bug修复分支bugfix/xxx。</p>
+
+<p>比如需要增加一个检查电话号码合法性检查的新特性，从master上checkout出<code>feature/add_tel_check</code>，在开发完成并在本地测试没问题之后，合并到test分支进行测试服务器测试，如果测试服测试过程中发现有问题，继续在<code>feature/check_tel</code>更改，改完再合并到<code>test</code>分支到测试服务器上测试，一直重复开发测试到没问题。</p>
+
+<p>这个时候把<code>feature/check_tel</code>申请合并到<code>master</code>, 这个时机需要做两件事。把代码链接发送给小组成员做codereview，jenkins服务器会把你的提交这个版本的代码跑一次testcase。</p>
+
+<p>如果codereview有问题，你需要和小组成员解释协商，如果需要更改，还在<code>feature/check_tel</code>上更改，并merge到<code>test</code>上测试，没问题时候再次向<code>master</code>发起合并申请。</p>
+
+<p>如果testcase有问题，你需要修复完testcase后再向<code>master</code>发起合并申请。</p>
+
+<p>如果开发需要上线，就把<code>master</code>上需要上线的代码节点，邮件告知全体开发成员。运维同学会把这个节点的代码合并到<code>release</code>分支，并部署在线上机器上。</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/11/30</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E5%9F%BA%E7%A1%80.html'>基础</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="14793567225986.html">
                 
                   <h1>常用命令备忘</h1>
@@ -677,6 +722,12 @@ That is an illustration when a void pointer can be cast to a constant void point
 	      
 		      
 			      <li class="post">
+			        <a href="14804765076303.html">git持续集成分支设计</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14802568775970.html">go tutorial</a>
 			      </li>
 		     
@@ -700,10 +751,6 @@ That is an illustration when a void pointer can be cast to a constant void point
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="14793659525228.html">AMQP协议</a>
-			      </li>
-		     
 		  
 		      
 		  

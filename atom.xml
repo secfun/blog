@@ -4,13 +4,36 @@
   <title><![CDATA[secfun]]></title>
   <link href="/atom.xml" rel="self"/>
   <link href="/"/>
-  <updated>2016-11-27T16:53:21+08:00</updated>
+  <updated>2016-11-28T14:14:23+08:00</updated>
   <id>/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[git持续集成分支设计]]></title>
+    <link href="/14804765076303.html"/>
+    <updated>2016-11-30T11:28:27+08:00</updated>
+    <id>/14804765076303.html</id>
+    <content type="html"><![CDATA[
+<p><img src="media/14804765076303/14804939447492.jpg" alt=""/></p>
+
+<p>分支命名规范，新的特性开发使用feature/xxx, bug修复分支bugfix/xxx。</p>
+
+<p>比如需要增加一个检查电话号码合法性检查的新特性，从master上checkout出<code>feature/add_tel_check</code>，在开发完成并在本地测试没问题之后，合并到test分支进行测试服务器测试，如果测试服测试过程中发现有问题，继续在<code>feature/check_tel</code>更改，改完再合并到<code>test</code>分支到测试服务器上测试，一直重复开发测试到没问题。</p>
+
+<p>这个时候把<code>feature/check_tel</code>申请合并到<code>master</code>, 这个时机需要做两件事。把代码链接发送给小组成员做codereview，jenkins服务器会把你的提交这个版本的代码跑一次testcase。</p>
+
+<p>如果codereview有问题，你需要和小组成员解释协商，如果需要更改，还在<code>feature/check_tel</code>上更改，并merge到<code>test</code>上测试，没问题时候再次向<code>master</code>发起合并申请。</p>
+
+<p>如果testcase有问题，你需要修复完testcase后再向<code>master</code>发起合并申请。</p>
+
+<p>如果开发需要上线，就把<code>master</code>上需要上线的代码节点，邮件告知全体开发成员。运维同学会把这个节点的代码合并到<code>release</code>分支，并部署在线上机器上。</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[go tutorial]]></title>
@@ -28,7 +51,27 @@
     <updated>2016-11-25T17:05:39+08:00</updated>
     <id>/14800647396409.html</id>
     <content type="html"><![CDATA[
-<p>我们可以使用经典的锁来实现单例， 但是这个用的不是</p>
+<p>可以在创建对象过程中hook一下，保证创建时候只有一个对象.</p>
+
+<pre><code class="language-python">class Singleton(object):  
+    def __new__(cls, *args, **kw):  
+        if not hasattr(cls, &#39;_instance&#39;):  
+            orig = super(Singleton, cls)  
+            cls._instance = orig.__new__(cls, *args, **kw)  
+        return cls._instance  
+</code></pre>
+
+<p>但是这种不是线程安全的， 在大并发下可能出现多个实例，并且实例被覆盖的情况。</p>
+
+<pre><code class="language-python">class Singleton(object):  
+    def __new__(cls, *args, **kw):  
+        if not hasattr(cls, &#39;_instance&#39;):  
+            orig = super(Singleton, cls)  
+            cls._instance = orig.__new__(cls, *args, **kw)  
+        return cls._instance  
+</code></pre>
+
+<p>更简单的， 我们可以依赖python的import机制，来实现单例。</p>
 
 ]]></content>
   </entry>
