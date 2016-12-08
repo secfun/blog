@@ -4,13 +4,111 @@
   <title><![CDATA[secfun]]></title>
   <link href="/atom.xml" rel="self"/>
   <link href="/"/>
-  <updated>2016-11-30T16:27:30+08:00</updated>
+  <updated>2016-11-30T19:00:10+08:00</updated>
   <id>/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[css layout]]></title>
+    <link href="/14811688466125.html"/>
+    <updated>2016-12-08T11:47:26+08:00</updated>
+    <id>/14811688466125.html</id>
+    <content type="html"><![CDATA[
+<p><a href="http://zh.learnlayout.com/frameworks.html">css layout</a>阅读笔记</p>
+
+<h3 id="toc_0">盒模型</h3>
+
+<p>默认box的width只是content的width，如果box另外有padding和border会撑大box实际占的尺寸。<br/>
+可以设置<code>box-sizing:box-sizing</code>来使width包含padding和border。</p>
+
+<h3 id="toc_1">display</h3>
+
+<p>每个元素都有自己的默认展示方式，div，section，ul等的默认布局是block， span， a等的默认布局方式是inline。我们可以更改元素的默认布局方式。</p>
+
+<ul>
+<li>block
+
+<ul>
+<li>  默认撑满父容器，独占一行</li>
+<li> 如果限制了宽度，可以设置左右距离为auto来实现左右居中</li>
+</ul></li>
+<li> inline
+
+<ul>
+<li> 默认紧紧包裹住子元素，一直会在同一行直到该行被铺满换行</li>
+<li> 常把li设置为inline来实现导航栏菜单</li>
+</ul></li>
+<li> inlineblock
+
+<ul>
+<li> 在布局表现上类似inline，元素会在同一行，但是本身又有block属性，可以设置宽高</li>
+</ul></li>
+<li> flex
+
+<ul>
+<li> 可以方便的实现垂直居中的布局，在手机上支持比较好，在pc老浏览器使用要注意</li>
+</ul></li>
+</ul>
+
+<h3 id="toc_2">布局</h3>
+
+<p>对一个块级元素来说，默认的布局方式position：static，其它的属性的元素都被称为positioned（已经定位）</p>
+
+<ul>
+<li>static
+
+<ul>
+<li>默认的布局方式</li>
+</ul></li>
+<li>relative
+
+<ul>
+<li>相对“自己的正常状态”来定位，即non-positioned时候定位</li>
+<li>之后的元素不会填补它错开的位置</li>
+</ul></li>
+<li>absolute
+
+<ul>
+<li>相对于父元素来定位</li>
+<li>已经脱离了原始的文档流</li>
+</ul></li>
+<li>fixed
+
+<ul>
+<li>相对于“视窗”来定位，最常见的浏览器右下角有一个返回顶部一般就是这种方式实现</li>
+<li>已经脱离了原始的文档流</li>
+</ul></li>
+</ul>
+
+<h3 id="toc_3">浮动</h3>
+
+<ul>
+<li>浮动会使元素脱离文档流，但是可以在之后元素使用clear来清除。</li>
+<li>对于教程中两列布局，可以使用absoute＋margin布局，也可以使用float布局。</li>
+<li>浮动偶尔会撑爆父元素，可以设置overflow：auto来避免。</li>
+<li><a href="http://stackoverflow.com/questions/211383/what-methods-of-clearfix-can-i-use">浮动的清除</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[python 对象协议]]></title>
+    <link href="/14806528032689.html"/>
+    <updated>2016-12-02T12:26:43+08:00</updated>
+    <id>/14806528032689.html</id>
+    <content type="html"><![CDATA[
+<p>python中对象都有下面这些属性:</p>
+
+<pre><code class="language-python">
+</code></pre>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[git持续集成分支设计]]></title>
@@ -42,16 +140,6 @@
     <id>/14800647396409.html</id>
     <content type="html"><![CDATA[
 <p>可以在创建对象过程中hook一下，保证创建时候只有一个对象.</p>
-
-<pre><code class="language-python">class Singleton(object):  
-    def __new__(cls, *args, **kw):  
-        if not hasattr(cls, &#39;_instance&#39;):  
-            orig = super(Singleton, cls)  
-            cls._instance = orig.__new__(cls, *args, **kw)  
-        return cls._instance  
-</code></pre>
-
-<p>但是这种不是线程安全的， 在大并发下可能出现多个实例，并且实例被覆盖的情况。</p>
 
 <pre><code class="language-python">class Singleton(object):  
     def __new__(cls, *args, **kw):  
