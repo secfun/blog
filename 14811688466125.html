@@ -180,7 +180,12 @@
 <li>absolute
 
 <ul>
-<li>相对于父元素来定位</li>
+<li>相对于<code>positioned</code>的父元素来定位
+
+<ul>
+<li>如果直接父元素是static，不相对于它定位</li>
+<li>可以把直接父元素改成relative，不设置top等值，父元素的表现和static时一样，但是absolute的子元素就会相对于它定位。</li>
+</ul></li>
 <li>已经脱离了原始的文档流</li>
 </ul></li>
 <li>fixed
@@ -208,6 +213,9 @@
       <div class="row">
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14815144252601.html" 
+          title="Previous Post: python 中参数传递">&laquo; python 中参数传递</a>
       
         </p>
         </div>
@@ -309,6 +317,12 @@ var duoshuoQuery = {short_name:"esile"};
 	      
 		      
 			      <li class="post">
+			        <a href="14815144252601.html">python 中参数传递</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14811688466125.html">css layout</a>
 			      </li>
 		     
@@ -332,10 +346,6 @@ var duoshuoQuery = {short_name:"esile"};
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="14799727855223.html">px em rem</a>
-			      </li>
-		     
 		  
 		      
 		  

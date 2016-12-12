@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  python 的单例模式 - secfun
+  python 中参数传递 - secfun
   
   </title>
   
@@ -105,10 +105,10 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>python 的单例模式</h1>
+          <h1>python 中参数传递</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2016/11/25</span>
+          <span class="date">2016/12/12</span>
 
           <span>posted in&nbsp;</span> 
           
@@ -125,17 +125,75 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>可以在创建对象过程中hook一下，保证创建时候只有一个对象.</p>
+      <p>python中参数传的是值还是地址？看下边几个小例子。</p>
 
-<pre><code class="language-python">class Singleton(object):  
-    def __new__(cls, *args, **kw):  
-        if not hasattr(cls, &#39;_instance&#39;):  
-            orig = super(Singleton, cls)  
-            cls._instance = orig.__new__(cls, *args, **kw)  
-        return cls._instance  
+<h3 id="toc_0">对于可变类型</h3>
+
+<p>可变类型作为参数要分两种情况。</p>
+
+<h5 id="toc_1">对参数的重新绑定</h5>
+
+<pre><code class="language-python">l=[1,2,3]
+print(id(l))
+def a(l):
+    print(id(l))
+    l=[4,5,6]
+    print(id(l))
+a(l)
+print(l)
 </code></pre>
 
-<p>更简单的， 我们可以依赖python的import机制，来实现单例。</p>
+<p>输出：<br/>
+<code><br/>
+4563450120<br/>
+4563450120<br/>
+4563512568<br/>
+[1, 2, 3]<br/>
+</code></p>
+
+<h5 id="toc_2">对参数指向对象的操作</h5>
+
+<pre><code class="language-python">l=[1,2,3]
+print(id(l))
+def a(l):
+    print(id(l))
+    l.extend([4,5,6])
+    print(id(l))
+print(id(l))
+a(l)
+print(l)
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code>4560210184
+4560210184
+4560210184
+4560210184
+[1, 2, 3, 4, 5, 6]
+</code></pre>
+
+<h3 id="toc_3">对于不可变类型</h3>
+
+<pre><code class="language-python">s = &quot;123&quot;
+print(id(s))
+def a(s):
+    print(id(s))
+    s = &quot;456&quot;
+    print(id(s))
+a(s)
+</code></pre>
+
+<p>输出：<br/>
+<code><br/>
+4346706280<br/>
+4346706280<br/>
+4346707600<br/>
+</code></p>
+
+<p>python传参，实际上是把<strong>传递对象的地址按值来传递</strong>。<br/>
+对参数进行重新赋值，不影响原来对象。<br/>
+对可变类型来说，对参数的对象进行操作（比如append,extend等），会影响原来的对象。</p>
 
 
     
@@ -146,16 +204,13 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14804765076303.html" 
-          title="Previous Post: git持续集成分支设计">&laquo; git持续集成分支设计</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14799727855223.html" 
-          title="Next Post: px em rem">px em rem &raquo;</a>
+          <a  href="14811688466125.html" 
+          title="Next Post: css layout">css layout &raquo;</a>
       
       </p>
         </div>
