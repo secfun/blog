@@ -4,13 +4,127 @@
   <title><![CDATA[secfun]]></title>
   <link href="/atom.xml" rel="self"/>
   <link href="/"/>
-  <updated>2016-12-08T13:39:16+08:00</updated>
+  <updated>2016-12-12T13:58:18+08:00</updated>
   <id>/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[duck type]]></title>
+    <link href="/14816022432179.html"/>
+    <updated>2016-12-13T12:10:43+08:00</updated>
+    <id>/14816022432179.html</id>
+    <content type="html"><![CDATA[
+<p>duck type把类型检查推后到run time的一种技术，可以通过动态类型或者反射实现。<br/>
+对于强类型语言，类型检查在编译时期做，如果有问题直接就回编译不通过。</p>
+
+<h3 id="toc_0">python</h3>
+
+<pre><code class="language-python">class Duck:
+    def quack(self):
+        print(&quot;Quack, quack!&quot;)
+
+    def fly(self):
+        print(&quot;Flap, Flap!&quot;)
+
+class Person:
+    def quack(self):
+        print(&quot;I&#39;m Quackin&#39;!&quot;)
+
+    def fly(self):
+        print(&quot;I&#39;m Flyin&#39;!&quot;)
+
+def in_the_forest(mallard):
+    mallard.quack()
+    mallard.fly()
+
+in_the_forest(Duck())
+in_the_forest(Person())
+</code></pre>
+
+<h4 id="toc_1">c</h4>
+
+<pre><code class="language-C#">using static System.Console;
+
+class Duck
+{
+    public void Quack() =&gt; WriteLine(&quot;Quaaaaaack!&quot;);
+    public void Feathers() =&gt; WriteLine(&quot;The duck has white and gray feathers.&quot;);
+}
+
+class Person
+{
+    public void Quack() =&gt; WriteLine(&quot;The person imitates a duck.&quot;);
+    public void Feathers() =&gt; WriteLine(&quot;The person takes a feather from the ground and shows it.&quot;);
+}
+
+class Program
+{
+    static void InTheForest(dynamic duck)
+    {
+        duck.Quack();
+        duck.Feathers();
+    }
+
+    static void Game()
+    {
+        Duck donald = new Duck();
+        Person john = new Person();
+        InTheForest(donald);
+        InTheForest(john);
+    }
+
+    static void Main()
+    {
+        Game();
+    }
+}
+</code></pre>
+
+<h4 id="toc_2">java</h4>
+
+<pre><code class="language-java">public class DuckTyping {
+
+    public static void main(String[] args) {
+        Duck duck = new Duck();
+        Person person = new Person();
+
+        try {
+            actAsADuck(duck);
+            actAsADuck(person);
+        } catch (NoSuchMethodException e) {
+            System.out.println(&quot;Method not found: &quot; + e.getMessage());
+        } catch (Exception e) {
+            System.out.println(&quot;Execution failed: &quot; + e);
+        }
+    }
+
+    static void actAsADuck(Object obj) throws Exception {
+        Class&lt;?&gt; objClass = obj.getClass();
+        objClass.getDeclaredMethod(&quot;walk&quot;).invoke(obj);
+        objClass.getDeclaredMethod(&quot;swim&quot;).invoke(obj);
+        objClass.getDeclaredMethod(&quot;quack&quot;).invoke(obj);
+    }
+}
+
+class Duck {
+    public void walk()  {System.out.println(&quot;I&#39;m a Duck, I can walk...&quot;);}
+    public void swim()  {System.out.println(&quot;I&#39;m a Duck, I can swim...&quot;);}
+    public void quack() {System.out.println(&quot;I&#39;m a Duck, I can quack...&quot;);}
+}
+
+class Person {
+    public void walk()  {System.out.println(&quot;I&#39;m a Person, I can walk...&quot;);}
+    public void swim()  {System.out.println(&quot;I&#39;m a Person, I can swim...&quot;);}
+    public void talk()  {System.out.println(&quot;I&#39;m a Person, I can talk...&quot;);}
+}
+</code></pre>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[python 中参数传递]]></title>
@@ -181,15 +295,48 @@ a(s)
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[python 对象协议]]></title>
+    <title type="html"><![CDATA[python with]]></title>
     <link href="/14806528032689.html"/>
     <updated>2016-12-02T12:26:43+08:00</updated>
     <id>/14806528032689.html</id>
     <content type="html"><![CDATA[
-<p>python中对象都有下面这些属性:</p>
+<p>从python 2.5开始，我们可以使用with来方便的管理一个资源，当代码退出with代码块时候，自动释放资源。</p>
 
-<pre><code class="language-python">
+<pre><code class="language-python">with open(&quot;xx.log&quot;, &quot;r&quot;) as f:
+    f.read()
+    ...
 </code></pre>
+
+<p>就可以取代下边的代码</p>
+
+<pre><code class="language-python">f = open(&quot;xx.log&quot;, &quot;r&quot;)
+f.read()
+...
+f.close()
+</code></pre>
+
+<p>但是python的with是怎么实现的呢？<br/>
+可以放在with字句中的对象都实现了<code>__enter__(self)</code>和<code>__exit__(self,,exc_type,exc_value,traceback)</code>，当进入with语句时候会调用enter方法，退出代码块儿时候会调用exit方法。下面来看一个小实验。</p>
+
+<pre><code>class TestWith():
+    def __init__(self, val):
+        self.val = val
+    def __enter__(self):
+        return self
+    def __exit__(self,exc_type,exc_value,traceback):
+        self.val = &quot;exist&quot;
+        
+with TestWith(&quot;enter&quot;) as t:
+    print t.val
+print t.val
+</code></pre>
+
+<p>output<br/>
+<code><br/>
+xdy@xudongyangdeMacBook-Pro ~/t/pythonnote&gt; python with.py<br/>
+enter<br/>
+exist<br/>
+</code></p>
 
 ]]></content>
   </entry>
