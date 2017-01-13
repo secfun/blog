@@ -83,6 +83,8 @@
             <li><a href="%E5%9F%BA%E7%A1%80.html">基础</a></li>
         
             <li><a href="docker.html">docker</a></li>
+        
+            <li><a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html">数据库</a></li>
          
 
       </ul>
@@ -104,6 +106,237 @@
 	<div class="large-8 medium-8 columns">
 		<div class="markdown-body home-categories">
 		
+			<div class="article">
+                <a class="clearlink" href="14843011097210.html">
+                
+                  <h1>python 中的yield</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>不少文章把yield类比与function中的return，还有不少说用yield实现协程。我们来梳理一下涉及到的概念。</p>
+
+<p>通过yield来返回值的函数实际上返回的是一个生成器（generator）。生成器这个概念在以往的编程经验中难以找到类比对象，给我们对yield的工作原理理解带来了一定困难。生成器确实比较特殊，第一步我们可以把它看成是以下特性的抽象：</p>
+
+<pre><code>*   可以执行到函数的一半，然后保存当前函数的运行状态（局部变量的值，执行的语句位置）
+*  当下一次调用生成器时候，接着上次的状态执行。
+</code></pre>
+
+<pre><code class="language-python">&gt;&gt;&gt; def y():
+...     yield 1
+...     yield 2
+...     yield 3
+...
+&gt;&gt;&gt; g = y()
+&gt;&gt;&gt; g # 返回的是一个生成器对象
+&lt;generator object y at 0x10cb63e10&gt;
+&gt;&gt;&gt; g.next() # 开始执行，执行完yield 1 并返回1
+1
+&gt;&gt;&gt; g
+&lt;generator object y at 0x10cb63e10&gt;
+&gt;&gt;&gt; next(g) # 有两种方法可以调用生成器使其执行下一步，本质都是调用g.__next__()
+2
+&gt;&gt;&gt; g.next()
+3
+&gt;&gt;&gt; g.next() # 最后执行到函数末尾或者函数返回（return），会触发StopIteration，结束生成器的执行
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+StopIteration
+</code></pre>
+
+<p>按照以往的编程概念，我们要遍历一个list，这个list之前应该是存在并且有穷的。但是利用生成器就可以实现无限长序列的迭代。</p>
+
+<pre><code class="language-python">def fib():
+    pre, pre_pre = 2, 1
+    while True:
+        result = pre + pre_pre
+        pre, pre_pre = result, pre
+        yield result
+
+f = fib()
+for i in xrange(10):
+    print(f.next())
+</code></pre>
+
+<p>generator是一个可以保存自己状态的执行到一半的函数，那么我们是否可以向generator传递参数来实现更有意思的事儿呢？看下边的例子。</p>
+
+<pre><code class="language-python">def gen_test():
+    i_will_be_return = 1
+    i_will_be_received_in_future = yield i_will_be_return
+
+    print(&quot;i_will_be_received_in_future: &quot; + str(i_will_be_received_in_future))
+    
+
+g = gen_test()
+r = g.next()
+print(&quot;get_return:&quot;+str(r))
+g.send(&quot;test&quot;)
+</code></pre>
+
+<pre><code class="language-output">get_return:1
+i_will_be_received_in_future: test
+Traceback (most recent call last):
+  File &quot;/Users/xdy/Demo/f.py&quot;, line 40, in &lt;module&gt;
+    g.send(&quot;test&quot;)
+StopIteration
+</code></pre>
+
+<p><code>receive_val = yield return_val</code> 当生成器被当作callee调用时候，执行到这一语句时会把return_val返回给caller， 并交出自己的控制权。当在该生成器上调用send方法时候，生成器会被激活接着向下执行，receive_val会获得send调用时候的参数。</p>
+
+<p>好了，接下来就可以利用生成器实现一个经典的生产者消费者模型了。</p>
+
+<pre><code class="language-python"># -*- coding:utf-8 -*-
+import time
+import functools
+
+__author__ = &#39;xdy&#39;
+
+def consumer():
+    r = &#39;&#39;
+    while True:
+        n = yield r
+        if not n:
+            return
+        print(&#39;[CONSUMER] Consuming %s...&#39; % n)
+        time.sleep(1)
+        r = &#39;200 OK&#39;
+
+
+def produce(c):
+    r = c.next()
+    print &quot;first r==&#39;&#39;:&quot;+ str(r==&#39;&#39;)
+    n = 0
+    while n &lt; 5:
+        n = n + 1
+        print(&#39;[PRODUCER] Producing %s...&#39; % n)
+        r = c.send(n)
+        print(&#39;[PRODUCER] Consumer return: %s&#39; % r)
+    c.close()
+
+
+if __name__ == &#39;__main__&#39;:
+    c = consumer()
+    produce(c)
+</code></pre>
+
+<pre><code class="language-output">first r==&#39;&#39;:True
+[PRODUCER] Producing 1...
+[CONSUMER] Consuming 1...
+[PRODUCER] Consumer return: 200 OK
+[PRODUCER] Producing 2...
+[CONSUMER] Consuming 2...
+[PRODUCER] Consumer return: 200 OK
+[PRODUCER] Producing 3...
+[CONSUMER] Consuming 3...
+[PRODUCER] Consumer return: 200 OK
+[PRODUCER] Producing 4...
+[CONSUMER] Consuming 4...
+[PRODUCER] Consumer return: 200 OK
+[PRODUCER] Producing 5...
+[CONSUMER] Consuming 5...
+[PRODUCER] Consumer return: 200 OK
+</code></pre>
+
+<p>这就是所谓协程。协程其实是在用户空间实现的线程，生成器可以认为是协程调度的实体。</p>
+
+<p>这些编程模型的出现都可以认为是在低速IO和高速CPU不匹配情况下为了压榨CPU性能提出的解决方案。</p>
+
+<p>在多进程模型中，进程切换时候要切换的上下文太多了，比如页表，TLB，寄存器等等，导致进程间切换效率低。多线程模型（内核态）中，线程切换只需要刷新下寄存器和堆栈就行了。但是人们还不满足，在用户态实现的多线程（协程），可以在一个函数继续执行的条件不满足时候把控制权让给其它代码段，可以获得更快的速度。</p>
+
+<p>ref:<br/>
+<a href="https://jeffknupp.com/about-me/">https://jeffknupp.com/about-me/</a><br/>
+<a href="https://zhuanlan.zhihu.com/p/22092214">https://zhuanlan.zhihu.com/p/22092214</a></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/1/13</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E5%9F%BA%E7%A1%80.html'>基础</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14835840280224.html">
+                
+                  <h1>resume</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2017/1/5</span>
+                    
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14817124927829.html">
+                
+                  <h1>percona toolkit</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>percona toolkit是一个可以方便进行mysql数据管理的工具包。</p>
+
+<h3 id="toc_0">安装</h3>
+
+<h3 id="toc_1">索引校验</h3>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/12/14</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E6%95%B0%E6%8D%AE%E5%BA%93.html'>数据库</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
 			<div class="article">
                 <a class="clearlink" href="14816022432179.html">
                 
@@ -1460,6 +1693,8 @@ That is an illustration when a void pointer can be cast to a constant void point
             <a href="%E5%9F%BA%E7%A1%80.html"><strong>基础</strong></a>
         
             <a href="docker.html"><strong>docker</strong></a>
+        
+            <a href="%E6%95%B0%E6%8D%AE%E5%BA%93.html"><strong>数据库</strong></a>
          
         </p>
 
@@ -1476,6 +1711,24 @@ That is an illustration when a void pointer can be cast to a constant void point
 	      
 		      
 			      <li class="post">
+			        <a href="14843011097210.html">python 中的yield</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14835840280224.html">resume</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14817124927829.html">percona toolkit</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14816022432179.html">duck type</a>
 			      </li>
 		     
@@ -1487,22 +1740,10 @@ That is an illustration when a void pointer can be cast to a constant void point
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="14811688466125.html">css layout</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="14806528032689.html">python with</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="14804765076303.html">git持续集成分支设计</a>
-			      </li>
-		     
 		  
 		      
 		  
